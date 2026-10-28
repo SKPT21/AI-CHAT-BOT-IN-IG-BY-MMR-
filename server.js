@@ -201,7 +201,12 @@ app.post("/webhook", (req, res) => {
     const body = req.body;
     if (body.object !== "instagram") return;
     for (const entry of body.entry || []) {
-      for (const ev of entry.messaging || []) {
+      // รองรับทั้งรูปแบบ messaging (ข้อความจริง) และ changes (ข้อมูลทดสอบของ Meta)
+      const events = [...(entry.messaging || [])];
+      for (const ch of entry.changes || []) {
+        if (ch.field === "messages" && ch.value) events.push(ch.value);
+      }
+      for (const ev of events) {
         handleMessagingEvent(ev).catch((err) =>
           console.error("[webhook] handler error:", err.message)
         );
