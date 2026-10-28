@@ -11,6 +11,9 @@ const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const MODEL = process.env.MODEL || "gemini-2.5-flash";
 const APP_SECRET = process.env.APP_SECRET || ""; // ไม่บังคับ: ถ้าใส่ จะตรวจลายเซ็น webhook
 const GRAPH_VERSION = process.env.GRAPH_VERSION || "v21.0";
+// token ขึ้นต้น IGAA... ใช้ https://graph.instagram.com
+// token ขึ้นต้น EAA...  ใช้ https://graph.facebook.com
+const IG_API_HOST = process.env.IG_API_HOST || "https://graph.instagram.com";
 
 const MAX_HISTORY = 20; // จำข้อความล่าสุดสูงสุด 20 messages
 const SESSION_TTL_MS = 60 * 60 * 1000; // 1 ชั่วโมง
@@ -97,7 +100,7 @@ function splitText(text, max = IG_MAX_CHARS) {
 }
 
 async function sendInstagramMessage(recipientId, text) {
-  const url = `https://graph.instagram.com/${GRAPH_VERSION}/me/messages`;
+  const url = `${IG_API_HOST}/${GRAPH_VERSION}/me/messages`;
   for (const chunk of splitText(text)) {
     const res = await fetch(url, {
       method: "POST",
@@ -164,6 +167,7 @@ async function handleMessagingEvent(ev) {
     reply = "ตอนนี้ฮานะสมองตื้อนิดหน่อย ลองทักมาใหม่อีกทีนะคะ";
   }
   await sendInstagramMessage(senderId, reply);
+  console.log(`[bot] replied to ${senderId}`);
 }
 
 // ---------- Routes ----------
@@ -175,6 +179,7 @@ app.get("/webhook", (req, res) => {
   const mode = req.query["hub.mode"];
   const token = req.query["hub.verify_token"];
   const challenge = req.query["hub.challenge"];
+  console.log("[webhook] GET verify, mode:", mode, "token match:", token === VERIFY_TOKEN);
   if (mode === "subscribe" && token && token === VERIFY_TOKEN) {
     return res.status(200).send(challenge);
   }
@@ -183,7 +188,11 @@ app.get("/webhook", (req, res) => {
 
 // Webhook events
 app.post("/webhook", (req, res) => {
-  if (!verifySignature(req)) return res.sendStatus(403);
+  console.log("[webhook] POST received:", JSON.stringify(req.body).slice(0, 600));
+  if (!verifySignature(req)) {
+    console.warn("[webhook] signature check failed (ตรวจ APP_SECRET หรือลบตัวแปรนี้ออก)");
+    return res.sendStatus(403);
+  }
 
   // ตอบ 200 ทันที เพื่อไม่ให้ Meta timeout/retry
   res.sendStatus(200);
