@@ -101,7 +101,7 @@ function splitText(text, max = IG_MAX_CHARS) {
 
 async function sendInstagramMessage(recipientId, text) {
   const IG_PAGE_ID = process.env.IG_PAGE_ID || "17841477196883165";
-const url = `${IG_API_HOST}/${GRAPH_VERSION}/${IG_PAGE_ID}/messages`;
+  const url = `${IG_API_HOST}/${GRAPH_VERSION}/${IG_PAGE_ID}/messages`;
   for (const chunk of splitText(text)) {
     const res = await fetch(url, {
       method: "POST",
@@ -155,6 +155,51 @@ async function handleMessagingEvent(ev) {
     await sendInstagramMessage(senderId, "ฮานะอ่านได้แต่ข้อความนะคะ พิมพ์มาเป็นตัวอักษรได้เลยค่ะ");
     return;
   }
+
+  // ---------- คำสั่งลับเช็ก System Monitor & AI Status ----------
+  const userMsg = msg.text.trim().toLowerCase();
+  if (userMsg === "!status" || userMsg === "!sys" || userMsg === "!info") {
+    const os = require("os");
+
+    const totalMem = (os.totalmem() / 1024 / 1024).toFixed(0);
+    const freeMem = (os.freemem() / 1024 / 1024).toFixed(0);
+    const usedMem = totalMem - freeMem;
+    const ramUsagePct = ((usedMem / totalMem) * 100).toFixed(1);
+
+    const totalSec = Math.floor(process.uptime());
+    const days = Math.floor(totalSec / (3600 * 24));
+    const hours = Math.floor((totalSec % (3600 * 24)) / 3600);
+    const mins = Math.floor((totalSec % 3600) / 60);
+    const secs = totalSec % 60;
+    
+    let uptimeStr = "";
+    if (days > 0) uptimeStr += `${days}d `;
+    if (hours > 0 || days > 0) uptimeStr += `${hours}h `;
+    uptimeStr += `${mins}m ${secs}s`;
+
+    const platform = `${os.type()} ${os.arch()}`;
+    const activeSessions = sessions.size;
+
+    const statusText = 
+      `🖥️ [SYSTEM MONITOR & DIAGNOSTIC]\n` +
+      `━━━━━━━━━━━━━━━━━━━━\n` +
+      `🟢 Server Status : Online (Render)\n` +
+      `⏱️ Server Uptime : ${uptimeStr}\n` +
+      `💾 Memory Usage  : ${usedMem}/${totalMem} MB (${ramUsagePct}%)\n` +
+      `⚙️ Node.js Ver   : ${process.version}\n` +
+      `🐧 OS Platform   : ${platform}\n` +
+      `━━━━━━━━━━━━━━━━━━━━\n` +
+      `🤖 AI Engine     : Google Gemini\n` +
+      `🧠 Active Model  : ${MODEL}\n` +
+      `💬 Active Session: ${activeSessions} user(s)\n` +
+      `🌐 API Host      : ${IG_API_HOST}\n` +
+      `━━━━━━━━━━━━━━━━━━━━\n` +
+      `✨ Utahana System Status: ALL OK!`;
+
+    await sendInstagramMessage(senderId, statusText);
+    return;
+  }
+  // ----------------------------------------------------------------
 
   let reply;
   try {
