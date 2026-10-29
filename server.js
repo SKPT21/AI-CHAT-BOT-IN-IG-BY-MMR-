@@ -132,18 +132,18 @@ async function sendInstagramMessage(recipientId, text) {
   }
 }
 
-// 🔍 ฟังก์ชันเสริม: ค้นหาข้อมูลผ่าน Tavily Search API
+// 🔍 ฟังก์ชันเสริม: ค้นหาข้อมูลผ่าน Tavily Search API (อัปเกรดเป็นโหมด Advanced ค้นหาลึกและสดใหม่ขึ้น)
 async function searchTavily(query) {
   if (!TAVILY_API_KEY) {
     console.warn("[Tavily] TAVILY_API_KEY is not set.");
     return null;
   }
   try {
-    console.log(`🔍 Tavily Searching for: "${query}"`);
+    console.log(`🔍 Tavily Advanced Searching for: "${query}"`);
     const response = await axios.post("https://api.tavily.com/search", {
       api_key: TAVILY_API_KEY,
       query: query,
-      search_depth: "basic",
+      search_depth: "advanced", // 🌟 ใช้โหมดค้นหาเชิงลึกเพื่อให้ได้ข้อมูลล่าสุด
       max_results: 3,
     });
     const results = response.data.results;
@@ -250,7 +250,7 @@ async function handleMessagingEvent(ev) {
   const session = getSession(senderId);
 
   if (!msg.text) {
-    await sendInstagramMessage(senderId, "ฮานะอ่านได้แต่ข้อความนะคะ พิมพ์มาเป็นตัวอักษรได้เลยค่ะ");
+    await sendInstagramMessage(senderId, "ฮานะอ่านได้แต่ข้อความนะคะ พิมพ์มาเป็นตัวอักษรได้เลยค่ะ 🌸");
     return;
   }
 
@@ -306,7 +306,7 @@ async function handleMessagingEvent(ev) {
     if (session.history.length && session.history[session.history.length - 1].role === "user") {
       session.history.pop();
     }
-    reply = "ตอนนี้ฮานะสมองตื้อนิดหน่อย ลองทักมาใหม่อีกทีนะคะ(#ER42953)";
+    reply = "ตอนนี้ฮานะสมองตื้อนิดหน่อย ลองทักมาใหม่อีกทีนะคะ (#ER42953) 🌸";
   }
   await sendInstagramMessage(senderId, reply);
   console.log(`[bot] replied to ${senderId}`);
