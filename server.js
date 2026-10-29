@@ -212,7 +212,7 @@ async function handleMessagingEvent(ev) {
     if (session.history.length && session.history[session.history.length - 1].role === "user") {
       session.history.pop();
     }
-    reply = "ตอนนี้ฮานะสมองตื้อนิดหน่อย ลองทักมาใหม่อีกทีนะคะ";
+    reply = "ตอนนี้ฮานะสมองตื้อนิดหน่อย ลองทักมาใหม่อีกทีนะคะ(#ER42953)";
   }
   await sendInstagramMessage(senderId, reply);
   console.log(`[bot] replied to ${senderId}`);
