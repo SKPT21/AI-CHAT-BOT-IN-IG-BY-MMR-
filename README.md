@@ -35,3 +35,4 @@ project by MMR And KKT Production
 
 ### Vercel
 ไม่แนะนำ เพราะเป็น serverless: ความจำใน RAM ไม่คงอยู่ และงานที่ทำหลังตอบ 200 อาจถูกตัดกลางคัน
+# โค้ดเขียนโดย Claude idea โดย KKT แก้โค้ด/บัค MMR Claude 
