@@ -1,4 +1,4 @@
-#ลองเล่นได้ที่ IG : utahana_7
+# ลองเล่นได้ที่ IG : utahana_7
 project by MMR And KKT Production 
 # Utahana Instagram Chatbot (Node.js + Express + Gemini)
 (AI whitening)
