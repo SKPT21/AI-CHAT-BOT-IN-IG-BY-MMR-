@@ -100,7 +100,8 @@ function splitText(text, max = IG_MAX_CHARS) {
 }
 
 async function sendInstagramMessage(recipientId, text) {
-  const url = `${IG_API_HOST}/${GRAPH_VERSION}/me/messages`;
+  const IG_PAGE_ID = process.env.IG_PAGE_ID || "17841477196883165";
+const url = `${IG_API_HOST}/${GRAPH_VERSION}/${IG_PAGE_ID}/messages`;
   for (const chunk of splitText(text)) {
     const res = await fetch(url, {
       method: "POST",
