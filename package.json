@@ -1,7 +1,7 @@
 {
   "name": "utahana-instagram-chatbot",
   "version": "1.0.0",
-  "description": "Instagram DM AI chatbot (Fujiwara Utahana) powered by Gemini",
+  "description": "Instagram DM AI chatbot (Fujiwara Utahana) powered by Groq & Gemini",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@google/genai": "^1.0.0",
-    "express": "^4.19.2"
+    "axios": "^1.7.9",
+    "express": "^4.19.2",
+    "openai": "^4.86.0"
   }
 }
