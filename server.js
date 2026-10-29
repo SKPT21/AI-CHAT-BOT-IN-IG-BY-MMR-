@@ -130,6 +130,8 @@ async function askGemini(session, userText) {
       systemInstruction: SYSTEM_INSTRUCTION,
       temperature: 0.9,
       maxOutputTokens: 512,
+      // 🟢 เพิ่มtools ค้นหาจาก Google Search สดๆ ตรงนี้
+      tools: [{ googleSearch: {} }],
     },
   });
   const reply = (response.text || "").trim();
