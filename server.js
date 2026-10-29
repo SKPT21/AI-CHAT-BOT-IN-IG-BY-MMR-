@@ -15,7 +15,7 @@ const IG_API_HOST = process.env.IG_API_HOST || "https://graph.instagram.com";
 
 // 🌟 ตัวแปรเลือกค่าย AI: "groq" หรือ "gemini" (ค่าเริ่มต้นเป็น groq ตามที่ตกลงกัน)
 const MODEL_PROVIDER = (process.env.MODEL_PROVIDER || "groq").toLowerCase();
-const MODEL_NAME = process.env.MODEL_NAME || (MODEL_PROVIDER === "groq" ? "qwen-2.5-32b" : "gemini-2.5-flash");
+const MODEL_NAME = process.env.MODEL_NAME || (MODEL_PROVIDER === "groq" ? "qwen/qwen3.8-27b" : "gemini-2.5-flash");
 
 // API Keys ของแต่ละค่าย
 const GROQ_API_KEY = process.env.GROQ_API_KEY;
@@ -197,7 +197,9 @@ async function askAI(session, userText) {
     const completion = await groqClient.chat.completions.create({
       model: MODEL_NAME,
       messages: messages,
-      temperature: 0.9,
+      temperature: 0.95,      // ปรับให้สูงขึ้นเพื่อความพริ้วและหลากหลาย
+      top_p: 0.9,           // สุ่มคำพูดให้เป็นธรรมชาติ
+      presence_penalty: 0.4,  // ป้องกันการตอบคำเดียวห้วนๆ และเกลี่ยความยาวให้พอดี
       max_tokens: 512,
     });
 
@@ -213,7 +215,7 @@ async function askAI(session, userText) {
 
     const configObj = {
       systemInstruction: SYSTEM_INSTRUCTION,
-      temperature: 0.9,
+      temperature: 0.95,
       maxOutputTokens: 512,
     };
     if (searchData) {
