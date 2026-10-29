@@ -1,5 +1,7 @@
+#ลองเล่นได้ที่ IG : utahana_7
+project by MMR And KKT Production 
 # Utahana Instagram Chatbot (Node.js + Express + Gemini)
-
+(AI whitening)
 ## โครงสร้าง
 - `server.js` – webhook, ส่งข้อความ IG, เรียก Gemini, ความจำแชท
 - `persona.js` – System Instruction ของ 藤原 歌花 (แก้นิสัยที่นี่)
